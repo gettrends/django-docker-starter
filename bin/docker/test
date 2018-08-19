@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+args="$@"
+
+if [ -z "$args" ]; then
+    docker exec -it starter-test bash -c "./bin/test"
+else
+    docker exec -it starter-test sh -c "python3 manage.py test $args"
+fi
+
+

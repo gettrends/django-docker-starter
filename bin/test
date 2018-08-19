@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+mkdir -p .cov/
+
+args="$@"
+
+set -a
+COVERAGE_FILE=".cov/$COVERAGE_FILE.coverage"
+set +a
+
+if [ -z "$args" ]; then
+    coverage run manage.py test --noinput
+else
+    coverage run manage.py test $args --noinput
+fi

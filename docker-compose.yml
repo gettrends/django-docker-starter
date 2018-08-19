@@ -1,0 +1,81 @@
+version: "2"
+
+services:
+  starter-web:
+    container_name: starter-web
+    image: starter
+    build: .
+    expose:
+      - "8000"
+    ports:
+      - "8001:8000"
+    working_dir: /var/app
+    depends_on:
+      - starter-pg
+      - starter-redis
+    external_links:
+      - starter-pg
+      - starter-redis
+    volumes:
+      - ${PWD}:/var/app
+    env_file:
+      - base.env
+    environment:
+    - APPLICATION=API
+    - ENVIRONMENT=dev
+
+  starter-test:
+    container_name: starter-test
+    image: starter-test
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    working_dir: /var/app
+    volumes:
+      - ./:/var/app
+    links:
+      - starter-pg:starter-pg
+    depends_on:
+      - starter-web
+    env_file:
+      - base.env
+
+  starter-worker:
+    container_name: starter-worker
+    image: starter
+    working_dir: /var/app
+    volumes:
+      - ./:/var/app
+    depends_on:
+      - starter-web
+      - starter-pg
+      - starter-redis
+    external_links:
+      - starter-web
+      - starter-pg
+      - starter-redis
+    env_file:
+      - base.env
+    environment:
+      - APPLICATION=WORKER
+
+  starter-pg:
+    container_name: starter-pg
+    image: postgres:10.4
+    restart: 'always'
+    environment:
+      POSTGRES_USER: 'start'
+      POSTGRES_PASSWORD: '1234567890'
+      POSTGRES_DB: 'starter'
+    expose:
+      - "5432"
+    ports:
+      - "8002:5432"
+
+  starter-redis:
+    container_name: starter-redis
+    image: redis:4.0.10
+    expose:
+      - "6379"
+    ports:
+      - "8003:6379"

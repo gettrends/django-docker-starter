@@ -1,0 +1,11 @@
+gunicorn==19.9.0
+Django==2.1
+djangorestframework==3.8.2
+djangorestframework-jwt==1.11.0
+django-extensions==2.1.0
+django-cors-headers==2.4.0
+celery==4.2.1
+psycopg2-binary==2.7.5
+redis==2.10.6
+requests==2.19.1
+pydash==4.7.3

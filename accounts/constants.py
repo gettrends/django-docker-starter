@@ -1,0 +1,1 @@
+TOKEN_TYPES = (('VERIFY', 'VERIFY'), ('RESET', 'RESET'))

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+if [ "$APPLICATION" = "API" ]; then
+
+    # Start Django Rest API
+
+    ./bin/wait-for -t 60 --host=$POSTGRES_HOST --port=5432
+    ./bin/migrate
+
+    if [ "$ENVIRONMENT" = "dev" ]; then
+        ./bin/superuser
+        ./bin/static-files
+        LEVEL="INFO"
+    else
+        LEVEL="ERROR"
+    fi
+
+    if [ "$ENVIRONMENT" = "dev" ]; then
+        gunicorn starter.wsgi \
+            --bind=0.0.0.0:8000 \
+            --access-logfile=/var/log/access.log \
+            --error-logfile=/var/log/error.log \
+            --reload
+    else
+        gunicorn starter.wsgi \
+            --bind=0.0.0.0:8000 \
+            --access-logfile=/var/log/access.log \
+            --error-logfile=/var/log/error.log
+    fi
+
+elif [ "$APPLICATION" = "WORKER" ]; then
+
+    # Start Celery Worker
+
+    ./bin/wait-for -t 60 --host=$POSTGRES_HOST --port=5432
+    ./bin/wait-for -t 60 --host=$REDIS_HOST --port=6379
+
+    celery -A starter worker -l info
+
+fi

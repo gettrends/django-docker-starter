@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# RESET removes all containers and recreates them.
+args="$@"
+
+if [ "$args" = "hard" ]; then
+    docker rm -f starter-web starter-pg starter-worker starter-test
+
+    docker-compose up -d
+
+else
+    docker rm -f starter-web
+
+    docker-compose up -d starter-web starter-worker
+fi

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [ "$1" = "python" ]; then
+    docker exec -it starter-web bash -c "ipython"
+elif [ "$1" = "test" ]; then
+    docker exec -it starter-test bash
+else
+    docker exec -it starter-web bash
+fi
