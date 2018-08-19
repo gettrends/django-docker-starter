@@ -1,13 +1,17 @@
 import datetime
 from rest_framework import status
+from rest_framework.decorators import api_view, authentication_classes, permission_classes, action
 from rest_framework.exceptions import APIException
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_jwt.serializers import JSONWebTokenSerializer
 from rest_framework_jwt.views import JSONWebTokenAPIView
 
 from accounts import tasks
-from accounts.models import User, Role, Token
+from accounts.models import User, Token
+from accounts.permissions import PublicEndpoint
 from accounts.serializers import UserSerializer
 from rest_framework.viewsets import ModelViewSet, ViewSet
 
@@ -21,7 +25,7 @@ class VerifyViewSet(JSONWebTokenAPIView):
     queryset = User.objects.all()
     serializer_class = JSONWebTokenSerializer
 
-    def create(self, request, *args, **kwargs):
+    def validate(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
@@ -44,24 +48,25 @@ class VerifyViewSet(JSONWebTokenAPIView):
         }
 
 
-class RegisterViewSet(ModelViewSet):
+@permission_classes((AllowAny, ))
+class RegisterViewSet(ViewSet):
     """
     API View that receives a POST with a new user's email and password
     Returns JSON that includes user ID, roles, etc...
     """
 
-    queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (PublicEndpoint,)
 
     def create(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             tasks.message.delay('verify', recipient=request.data['email'])
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UserViewSet(ModelViewSet):
     """
