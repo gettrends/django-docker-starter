@@ -109,23 +109,6 @@ class APITests(APITestCase):
 
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    # def test_can_add_role_to_user(self):
-    #     user = User.objects.create_user(email='notme@reelio.com', password='12345')
-    #     user.save()
-    #
-    #     role = Role(name='manager')
-    #     role.save()
-    #     _id = user.id
-    #     path = '/v1/user/{}/roles'.format(_id)
-    #
-    #     c = Client()
-    #
-    #     response = c.post(path, json.dumps({
-    #         'roles': [str(role.id)]
-    #     }), content_type='application/json')
-    #
-    #     self.assertEquals(response.status_code, status.HTTP_200_OK)
-
     def test_will_throw_404_on_invalid_user_id(self):
         factory = APIRequestFactory()
 
@@ -141,97 +124,18 @@ class APITests(APITestCase):
 
         self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
 
-#     def test_add_role_will_throw_500_error_on_invalid_role_id(self):
-#         user = User.objects.create_user(email='notme@reelio.com', password='12345')
-#         user.save()
-#
-#         _id = user.id
-#         path = '/v1/user/{}/roles'.format(_id)
-#
-#         c = Client()
-#
-#         response = c.post(path, json.dumps({
-#             'roles': ["9674cd52-37b0-4460-a69b-1563f0aed93a"]
-#         }), content_type='application/json')
-#
-#         self.assertEquals(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
-#
-#     def test_can_overwrite_user_roles(self):
-#         user = User.objects.create_user(email='notme@reelio.com', password='12345')
-#         user.save()
-#
-#         role = Role(name='agent')
-#         role.save()
-#         _id = user.id
-#         path = '/v1/user/{}/'.format(_id)
-#
-#         c = Client()
-#
-#         response = c.put(path, json.dumps({
-#             'role': [str(role.id)]
-#         }), content_type='application/json')
-#         print(response.data)
-#         self.assertEquals(response.status_code, status.HTTP_200_OK)
-#
-#     def test_overwrite_role_will_throw_500_error_on_invalid_role_id(self):
-#         user = User.objects.create_user(email='notme@reelio.com', password='12345')
-#         user.save()
-#
-#         _id = user.id
-#         path = '/v1/user/{}/role/'.format(_id)
-#
-#         c = Client()
-#
-#         response = c.put(path, json.dumps({
-#             'roles': ["9674cd52-37b0-4460-a69b-1563f0aed93a"]
-#         }), content_type='application/json')
-#         print(response.data)
-#         self.assertEquals(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
-#
-#     def test_can_remove_user_roles(self):
-#         user = User.objects.create_user(email='notme@reelio.com', password='12345')
-#         user.save()
-#
-#         role = Role(name='agent')
-#         role.save()
-#         _id = user.id
-#         path = '/v1/user/{}/roles'.format(_id)
-#
-#         c = Client()
-#
-#         response = c.delete(path, json.dumps({
-#             'roles': [str(role.id)]
-#         }), content_type='application/json')
-#
-#         self.assertEquals(response.status_code, status.HTTP_200_OK)
-#
-#     def test_remove_role_will_throw_500_error_on_invalid_role_id(self):
-#         user = User.objects.create_user(email='notme@reelio.com', password='12345')
-#         user.save()
-#
-#         _id = user.id
-#         path = '/v1/user/{}/roles'.format(_id)
-#
-#         c = Client()
-#
-#         response = c.delete(path, json.dumps({
-#             'roles': ["9674cd52-37b0-4460-a69b-1563f0aed93a"]
-#         }), content_type='application/json')
-#
-#         self.assertEquals(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
-#
-#     def test_can_request_a_password_reset(self):
-#         user = User.objects.create_user(email='notme@reelio.com', password='12345')
-#         user.save()
-#
-#         c = Client()
-#
-#         response = c.post('/v1/request_password_change', json.dumps({
-#             "email": "notme@reelio.com"
-#         }), content_type='application/json')
-#
-#         self.assertEquals(response.status_code, status.HTTP_200_OK)
-#
+    def test_can_request_a_password_reset(self):
+        user = User.objects.create_user(email='notme@reelio.com', password='12345')
+        user.save()
+
+        c = Client()
+
+        response = c.post('/v1/request_password_change/', {
+            "email": "notme@reelio.com"
+        })
+
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
 #     def test_can_confirm_a_new_user(self):
 #         token = Token(user_id=self.user.id, type='VERIFY')
 #         token.save()

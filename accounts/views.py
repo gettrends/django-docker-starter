@@ -1,11 +1,10 @@
 import datetime
 from rest_framework import status
-from rest_framework.decorators import api_view, authentication_classes, permission_classes, action
+from rest_framework.decorators import permission_classes
 from rest_framework.exceptions import APIException
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework_jwt.serializers import JSONWebTokenSerializer
 from rest_framework_jwt.views import JSONWebTokenAPIView
 
@@ -145,8 +144,9 @@ class PasswordChangeRequestViewSet(ViewSet):
     """
 
     queryset = User.objects.all()
+    permission_classes = (PublicEndpoint,)
 
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         email = request.data['email']
 
         get_object_or_404(self.queryset, email=email)
