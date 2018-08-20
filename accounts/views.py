@@ -68,6 +68,7 @@ class RegisterViewSet(ViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class UserViewSet(ModelViewSet):
     """
     API View that receives a GET to query a user by ID

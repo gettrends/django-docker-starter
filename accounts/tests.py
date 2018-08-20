@@ -74,40 +74,39 @@ class APITests(APITestCase):
         })
 
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        #
+
         # response = c.get('/v1/user/{}/'.format(response.data['id']))
         #
         # self.assertEquals(response.status_code, status.HTTP_200_OK)
         # self.assertEquals(response.data['email'], "dave@reelio.com")
 
-    # def test_cannot_register_without_password(self):
-    #     c = Client()
-    #     response = c.post('/v1/register/', {
-    #         "email": "dave@reelio.com"
-    #     })
-    #
-    #     self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
-    #
-    # def test_can_authenticate_user(self):
-    #     c = Client()
-    #     response = c.post('/v1/auth/', {
-    #         "email": "none@reelio.com",
-    #         "password": "12345"
-    #     })
-    #
-    #     self.assertEquals(response.status_code, status.HTTP_200_OK)
-    #     self.assertTrue('token' in response.data)
-    #     self.assertTrue('user' in response.data)
+    def test_cannot_register_without_password(self):
+        c = Client()
+        response = c.post('/v1/register/', {
+            "email": "dave@reelio.com"
+        })
 
-#     def test_authentication_fails_with_bad_password(self):
-#         c = Client()
-#         response = c.post('/v1/auth/', {
-#             "email": "notme@reelio.com",
-#             "password": "1"
-#         })
-#
-#         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
-#
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_can_authenticate_user(self):
+        c = Client()
+        response = c.post('/v1/auth/', {
+            "email": "none@reelio.com",
+            "password": "12345"
+        })
+
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertTrue('token' in response.data)
+
+    def test_authentication_fails_with_bad_password(self):
+        c = Client()
+        response = c.post('/v1/auth/', {
+            "email": "notme@reelio.com",
+            "password": "1"
+        })
+
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 #     def test_can_add_role_to_user(self):
 #         user = User.objects.create_user(email='notme@reelio.com', password='12345')
 #         user.save()
