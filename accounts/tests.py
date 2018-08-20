@@ -7,7 +7,9 @@ from rest_framework import status
 
 from accounts.models import User, UserManager, Role, Token
 
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+
+from accounts.views import UserViewSet
 
 
 class UserModelTests(APITestCase):
@@ -76,7 +78,7 @@ class APITests(APITestCase):
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
 
         # response = c.get('/v1/user/{}/'.format(response.data['id']))
-        #
+
         # self.assertEquals(response.status_code, status.HTTP_200_OK)
         # self.assertEquals(response.data['email'], "dave@reelio.com")
 
@@ -107,40 +109,38 @@ class APITests(APITestCase):
 
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-#     def test_can_add_role_to_user(self):
-#         user = User.objects.create_user(email='notme@reelio.com', password='12345')
-#         user.save()
-#
-#         role = Role(name='manager')
-#         role.save()
-#         _id = user.id
-#         path = '/v1/user/{}/roles'.format(_id)
-#
-#         c = Client()
-#
-#         response = c.post(path, json.dumps({
-#             'roles': [str(role.id)]
-#         }), content_type='application/json')
-#
-#         self.assertEquals(response.status_code, status.HTTP_200_OK)
-#
-#     def test_will_throw_404_on_invalid_user_id(self):
-#         user = User.objects.create_user(email='notme@reelio.com', password='12345')
-#         user.save()
-#
-#         role = Role(name='manager')
-#         role.save()
-#         _id = "9674cd52-37b0-4460-a69b-1563f0aed93a"
-#         path = '/v1/user/{}/roles'.format(_id)
-#
-#         c = Client()
-#
-#         response = c.post(path, json.dumps({
-#             'roles': [str(role.id)]
-#         }), content_type='application/json')
-#
-#         self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
-#
+    # def test_can_add_role_to_user(self):
+    #     user = User.objects.create_user(email='notme@reelio.com', password='12345')
+    #     user.save()
+    #
+    #     role = Role(name='manager')
+    #     role.save()
+    #     _id = user.id
+    #     path = '/v1/user/{}/roles'.format(_id)
+    #
+    #     c = Client()
+    #
+    #     response = c.post(path, json.dumps({
+    #         'roles': [str(role.id)]
+    #     }), content_type='application/json')
+    #
+    #     self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_will_throw_404_on_invalid_user_id(self):
+        factory = APIRequestFactory()
+
+        user = User.objects.create_user(email='notme@reelio.com', password='12345')
+        user.save()
+
+        view = UserViewSet.as_view({'get': 'retrieve'})
+        bad_id = '8fdfe416-c106-4acb-ac02-2fb241f24ae5'
+        request = factory.get(f'/v1/user/{bad_id}/')
+        force_authenticate(request, user=user)
+
+        response = view(request, pk=bad_id)
+
+        self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
+
 #     def test_add_role_will_throw_500_error_on_invalid_role_id(self):
 #         user = User.objects.create_user(email='notme@reelio.com', password='12345')
 #         user.save()
