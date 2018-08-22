@@ -8,9 +8,15 @@ jobs:
           DEBUG: true
           POSTGRES_HOST: starter-pg
           POSTGRES_DB: starter
-          POSTGRES_PASSWORD: "123456789"
+          POSTGRES_PASSWORD: "1234567890"
           REDIS_HOST: redis://localhost:6379
           SECRET_KEY: "88t7GMYBwWW2FS27"
+      - image: postgres:10.4
+        environment:
+          POSTGRES_USER: 'start'
+          POSTGRES_PASSWORD: '1234567890'
+          POSTGRES_DB: 'starter'
+      - image: redis:4.0.10
     working_directory: /var/app
     steps:
       - checkout
