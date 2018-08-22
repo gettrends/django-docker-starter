@@ -1,3 +1,32 @@
+version: 2
+jobs:
+  tests:
+    docker:
+      - image: python:3.6-stretch
+    working_directory: /var/app
+
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+          reusable: true
+      - run:
+          name: Wait for dbs
+          command: |
+            dockerize -wait tcp://localhost:5432 -timeout 1m
+            dockerize -wait tcp://localhost:6379 -timeout 1m
+      - run:
+          name: Run unit tests
+          command: ./bin/test && codecov --token=$CODECOV_TOKEN
+          environment:
+            COVERAGE_FILE: all
+
+workflows:
+  version: 2
+  discovery:
+    jobs:
+      - tests
+
 # Python CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
