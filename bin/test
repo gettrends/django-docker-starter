@@ -7,7 +7,7 @@ COVERAGE_FILE="$COVERAGE_FILE.coverage"
 set +a
 
 if [ -z "$args" ]; then
-    coverage run manage.py test --noinput && coverage report -m && coverage html
+    coverage run manage.py test --noinput && coverage report -m && coverage html && coverage xml
 else
     coverage run manage.py test $args --noinput
 fi
