@@ -1,0 +1,6 @@
+[run]
+source = ./reelio
+omit = */*/migrations/*.py,*/*/tests/*.py
+
+[report]
+omit = */*/migrations/*.py,*/*/tests/*.py
