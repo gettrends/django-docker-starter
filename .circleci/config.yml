@@ -11,6 +11,16 @@ jobs:
           docker_layer_caching: true
           reusable: true
       - run:
+          name: Install dependencies
+          command: |
+            apt-get update && \
+            apt-get install -y bash musl-dev libc-dev gcc git && \
+            pip3 install -U pip && \
+            pip3 install -r requirements.txt && pip3 install -r requirements-dev.txt && \
+            wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+            tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+            rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+      - run:
           name: Wait for dbs
           command: |
             dockerize -wait tcp://localhost:5432 -timeout 1m
