@@ -13,7 +13,7 @@ coverage:
         target: auto
         if_not_found: success  # no commit found? still set a success
 
-    patch: yes
-    changes: yes
+    patch: no
+    changes: no
 
 comment: true
