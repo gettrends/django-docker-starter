@@ -19,4 +19,4 @@ coverage:
     changes: no
 
 comment:
-  layout: "reach, diff, flags, files, footer"
+  layout: "reach, diff, flags, files, footer, sunburst"
