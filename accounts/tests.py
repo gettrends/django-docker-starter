@@ -136,75 +136,74 @@ class APITests(APITestCase):
 
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
-#     def test_can_confirm_a_new_user(self):
-#         token = Token(user_id=self.user.id, type='VERIFY')
-#         token.save()
-#
-#         c = Client()
-#         response = c.post('/v1/confirm/{}/'.format(token.id))
-#
-#         self.assertEquals(response.status_code, status.HTTP_200_OK)
-#
-#     def test_fails_if_confirm_token_expired(self):
-#         timestamp = datetime.datetime.now() - datetime.timedelta(days=2)
-#         token = Token(user_id=self.user.id, type='VERIFY')
-#         token.save()
-#
-#         # Overwrite token expiration time
-#         cursor = connection.cursor()
-#         cursor.execute("UPDATE communication_token SET expires='{}' WHERE id='{}'; ".format(str(timestamp), token.id))
-#
-#         c = Client()
-#         response = c.post('/v1/confirm/{}/'.format(token.id))
-#
-#         self.assertEquals(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
-#
-#     def test_reset_expired_token(self):
-#         token = Token(user_id=self.user.id, type='VERIFY')
-#         token.save()
-#
-#         c = Client()
-#         response = c.post('/v1/reset_confirm/{}/'.format(token.id), json.dumps({
-#             'email': 'none@reelio.com'
-#         }), content_type='application/json')
-#
-#         self.assertEquals(response.status_code, status.HTTP_200_OK)
-#
-#     def test_request_password_reset(self):
-#
-#         c = Client()
-#         response = c.post('/v1/request_password_change/', json.dumps({
-#             'email': 'none@reelio.com'
-#         }), content_type='application/json')
-#
-#         self.assertEquals(response.status_code, status.HTTP_200_OK)
-#
-#     def test_reset_password(self):
-#         token = Token(user_id=self.user.id, type='RESET')
-#         token.save()
-#
-#         c = Client()
-#         response = c.post('/v1/change_password/{}/'.format(token.id), json.dumps({
-#             'email': 'none@reelio.com',
-#             'password': '09876'
-#         }), content_type='application/json')
-#
-#         self.assertEquals(response.status_code, status.HTTP_200_OK)
-#
-#     def test_password_reset_fails_with_expired_token(self):
-#         timestamp = datetime.datetime.now() - datetime.timedelta(days=2)
-#
-#         token = Token(user_id=self.user.id, type='RESET')
-#         token.save()
-#
-#         # Overwrite token expiration time
-#         cursor = connection.cursor()
-#         cursor.execute("UPDATE accounts_token SET expires='{}' WHERE id='{}'; ".format(str(timestamp), token.id))
-#
-#         c = Client()
-#         response = c.post('/v1/change_password/{}/'.format(token.id), json.dumps({
-#             'email': 'none@reelio.com',
-#             'password': '09876'
-#         }), content_type='application/json')
-#
-#         self.assertEquals(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def test_can_confirm_a_new_user(self):
+        token = Token(user_id=self.user.id, type='VERIFY')
+        token.save()
+
+        c = Client()
+        response = c.post(f'/v1/confirm/?id={token.id}')
+
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_fails_if_confirm_token_expired(self):
+        timestamp = datetime.datetime.now() - datetime.timedelta(days=2)
+        token = Token(user_id=self.user.id, type='VERIFY')
+        token.save()
+
+        # Overwrite token expiration time
+        cursor = connection.cursor()
+        cursor.execute("UPDATE accounts_token SET expires='{}' WHERE id='{}'; ".format(str(timestamp), token.id))
+
+        c = Client()
+        response = c.post(f'/v1/confirm/?id={token.id}')
+
+        self.assertEquals(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def test_reset_expired_token(self):
+        token = Token(user_id=self.user.id, type='VERIFY')
+        token.save()
+
+        c = Client()
+        response = c.post('/v1/reset_confirm/'.format(token.id), json.dumps({
+            'email': 'none@reelio.com'
+        }), content_type='application/json')
+
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_request_password_reset(self):
+        c = Client()
+        response = c.post('/v1/request_password_change/', json.dumps({
+            'email': 'none@reelio.com'
+        }), content_type='application/json')
+
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_reset_password(self):
+        token = Token(user_id=self.user.id, type='RESET')
+        token.save()
+
+        c = Client()
+        response = c.post(f'/v1/change_password/{token.id}/', json.dumps({
+            'email': 'none@reelio.com',
+            'password': '09876'
+        }), content_type='application/json')
+
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_password_reset_fails_with_expired_token(self):
+        timestamp = datetime.datetime.now() - datetime.timedelta(days=2)
+
+        token = Token(user_id=self.user.id, type='RESET')
+        token.save()
+
+        # Overwrite token expiration time
+        cursor = connection.cursor()
+        cursor.execute("UPDATE accounts_token SET expires='{}' WHERE id='{}'; ".format(str(timestamp), token.id))
+
+        c = Client()
+        response = c.post('/v1/change_password/{}/'.format(token.id), json.dumps({
+            'email': 'none@reelio.com',
+            'password': '09876'
+        }), content_type='application/json')
+
+        self.assertEquals(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)

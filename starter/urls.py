@@ -21,14 +21,16 @@ from django.urls import path, include
 from accounts.urls import router
 from rest_framework_jwt.views import verify_jwt_token, obtain_jwt_token
 
-from accounts.views import ConfirmUserViewSet, PasswordChangeRequestViewSet, PasswordChangeViewSet
+from accounts.views import ConfirmUserViewSet, PasswordChangeRequestViewSet, PasswordChangeViewSet, \
+    ResetConfirmUserToken
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^v1/verify/', verify_jwt_token),
     url(r'^v1/auth/', obtain_jwt_token),
     url(r'^v1/request_password_change/', PasswordChangeRequestViewSet.as_view({'post': 'create'})),
-    url(r'^v1/change_password/', PasswordChangeViewSet),
-    url(r'^v1/confirm/', ConfirmUserViewSet),
+    url(r'^v1/change_password/(?P<id>[/\w-]+)/$', PasswordChangeViewSet.as_view({'post': 'change'})),
+    url(r'^v1/confirm/', ConfirmUserViewSet.as_view({'post': 'confirm'})),
+    url(r'^v1/reset_confirm/', ResetConfirmUserToken.as_view({'post': 'confirm'})),
     url(r'^v1/', include((router.urls, 'accounts'), namespace='accounts')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

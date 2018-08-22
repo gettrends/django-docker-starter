@@ -90,17 +90,17 @@ class UserRoleViewSet(ViewSet):
     serializer_class = UserSerializer
 
 
-
 class ConfirmUserViewSet(ViewSet):
     """
     Confirm a user's email address
     """
 
     queryset = Token.objects.all()
+    lookup_field = 'id'
+    permission_classes = (PublicEndpoint,)
 
-    def post(self, request, *args, **kwargs):
-        _id = self.kwargs.get('id')
-
+    def confirm(self, request, *args, **kwargs):
+        _id = request.query_params.get('id')
         token = get_object_or_404(self.queryset, pk=_id)
 
         # If token is older than expiration timestamp, it's expired, user must request a new token.
@@ -123,8 +123,9 @@ class ResetConfirmUserToken(ViewSet):
     """
 
     queryset = User.objects.all()
+    permission_classes = (PublicEndpoint,)
 
-    def post(self, request, *args, **kwargs):
+    def confirm(self, request, *args, **kwargs):
         email = request.data['email']
 
         user = get_object_or_404(self.queryset, email=email)
@@ -162,8 +163,9 @@ class PasswordChangeViewSet(ViewSet):
     """
 
     queryset = Token.objects.all()
+    permission_classes = (PublicEndpoint,)
 
-    def post(self, request, *args, **kwargs):
+    def change(self, request, *args, **kwargs):
         _id = self.kwargs.get('id')
         password = request.data['password']
 
