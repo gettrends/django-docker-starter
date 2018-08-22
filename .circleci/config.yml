@@ -25,6 +25,11 @@ jobs:
             pip3 install -U pip && \
             pip3 install -r requirements.txt && pip3 install -r requirements-dev.txt
       - run:
+          name: Wait for dbs
+          command: |
+            ./bin/wait-for -t 60 --host=localhost --port=5432
+            ./bin/wait-for -t 60 --host=localhost --port=6379
+      - run:
           name: Run unit tests
           command: ./bin/test && codecov --token=$CODECOV_TOKEN
           environment:
