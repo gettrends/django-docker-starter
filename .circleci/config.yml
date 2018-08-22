@@ -6,10 +6,10 @@ jobs:
         environment:
           ENVIRONMENT: dev
           DEBUG: true
-          POSTGRES_HOST: starter-pg
+          POSTGRES_HOST: localhost
           POSTGRES_DB: starter
           POSTGRES_PASSWORD: "1234567890"
-          REDIS_HOST: redis://localhost:6379
+          REDIS_HOST: localhost
           SECRET_KEY: "88t7GMYBwWW2FS27"
       - image: postgres:10.4
         environment:
