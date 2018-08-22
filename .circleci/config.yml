@@ -3,8 +3,15 @@ jobs:
   tests:
     docker:
       - image: python:3.6-stretch
+        environment:
+          ENVIRONMENT: dev
+          DEBUG: true
+          POSTGRES_HOST: starter-pg
+          POSTGRES_DB: starter
+          POSTGRES_PASSWORD: "123456789"
+          REDIS_HOST: redis://localhost:6379
+          SECRET: "88t7GMYBwWW2FS27"
     working_directory: /var/app
-
     steps:
       - checkout
       - setup_remote_docker:
@@ -20,11 +27,6 @@ jobs:
             wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
             tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
             rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-      - run:
-          name: Wait for dbs
-          command: |
-            dockerize -wait tcp://localhost:5432 -timeout 1m
-            dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           name: Run unit tests
           command: ./bin/test && codecov --token=$CODECOV_TOKEN
