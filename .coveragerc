@@ -1,5 +1,5 @@
 [run]
-omit = */*/migrations/*.py,*/*/tests/*.py
+omit = */*/migrations/*.py,*/*/tests/*.py,manage.py
 
 [report]
-omit = */*/migrations/*.py,*/*/tests/*.py
+omit = */*/migrations/*.py,*/*/tests/*.py,manage.py
