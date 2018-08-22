@@ -1,8 +1,8 @@
 # Run this to validate this file:
 # curl --data-binary @codecov.yml https://codecov.io/validate
 codecov:
-  ci:
-    - "ci/circleci"
+  notify:
+    require_ci_to_pass: yes
 
 coverage:
   precision: 2
@@ -18,4 +18,5 @@ coverage:
     patch: no
     changes: no
 
-comment: true
+comment:
+  layout: "reach, diff, flags, files, footer"
